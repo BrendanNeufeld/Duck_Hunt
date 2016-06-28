@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Log in with socket.io</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<style type="text/css">
+	
+	</style>
+</head>
+<body>
+	<div id="fb-root"></div>
+	<div id="popups">
+	<div id="userInfo-login" class="popup visible" style="margin-left: -265.5px; margin-top: 20px;">
+			<div class="group">
+				<h1>Add User</h1>
+				<!--<p>Log in instructions...</p>-->
+			</div>
+			<!-- <div class="group">
+			<p>Log in with your preferred social account to get instant access:</p>
+			<p><a id='facebook-login'><img src="/img/fb-login-btn.png" /></a>&nbsp;&nbsp;<a id='twitter-login'><img src="/img/sign-in-with-twitter-gray.png" /></a></p>
+			</div>-->
+			<div class="group hidden" id="error-messages">
+				<em for="emailAddress" class="error">Please provide a valid email address.</em>
+				<em for="password" class="error">Password must be at least 6 characters long.</em>
+				<em for="passwordIncorrect" class="error">Incorrect password.</em>
+				<em for="emailAddressIncorrect" class="error">Incorrect email.</em>
+			</div>
+
+			<div class="group form" id="register">
+				<label class="required"><b>User Name</b>
+					<input type="text" name="userName" maxlength="30" value="">
+				 </label>
+				<label class="required"><b>Password</b>
+					<input type="password" name="password" value="" maxlength="18">
+				</label>
+			</div>
+
+			<a id="submit-register" class="button-generic submit">
+				<div class="btn-right-wrapper">
+					<div class="btn-mid-wrapper">
+						enter
+					</div>
+				</div>
+			</a>
+			<br/>&nbsp;<br/>&nbsp;
+			<hr>
+			
+			<div class="group">
+				<h1>Update Score</h1>
+				<!--<p>Log in instructions...</p>-->
+			</div>
+			<div class="group hidden" id="error-messages">
+				<em for="emailAddress" class="error">Please provide a valid email address.</em>
+				<em for="password" class="error">Password must be at least 6 characters long.</em>
+				<em for="passwordIncorrect" class="error">Incorrect password.</em>
+				<em for="emailAddressIncorrect" class="error">Incorrect email.</em>
+			</div>
+
+			<div class="group form" id="update-score">
+				<label class="required"><b>User Name</b>
+					<input type="text" name="userName" maxlength="30" value="">
+				 </label>
+				<label class="required"><b>Score</b>
+					<input type="text" name="score" value="" maxlength="10">
+				</label>
+			</div>
+
+			<a id="submit-score" class="button-generic submit">
+				<div class="btn-right-wrapper">
+					<div class="btn-mid-wrapper">
+						update
+					</div>
+				</div>
+			</a>
+			
+			<br/>&nbsp;<br/>&nbsp;
+			<hr>
+			
+			<div class="group">
+				<h1>Remove User</h1>
+				<!--<p>Log in instructions...</p>-->
+			</div>
+			<!-- <div class="group">
+			<p>Log in with your preferred social account to get instant access:</p>
+			<p><a id='facebook-login'><img src="/img/fb-login-btn.png" /></a>&nbsp;&nbsp;<a id='twitter-login'><img src="/img/sign-in-with-twitter-gray.png" /></a></p>
+			</div>-->
+			<div class="group hidden" id="error-messages">
+				<em for="emailAddress" class="error">Please provide a valid email address.</em>
+				<em for="password" class="error">Password must be at least 6 characters long.</em>
+				<em for="passwordIncorrect" class="error">Incorrect password.</em>
+				<em for="emailAddressIncorrect" class="error">Incorrect email.</em>
+			</div>
+
+			<div class="group form" id="remove">
+				<label class="required"><b>User Name</b>
+					<input type="text" name="userName" maxlength="30" value="">
+				 </label>
+			</div>
+
+			<a id="submit-remove" class="button-generic submit">
+				<div class="btn-right-wrapper">
+					<div class="btn-mid-wrapper">
+						remove
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/js/libs/jquery-1.9.1.min.js"><\/script>')</script>
+	<script type="text/javascript" src="/js/libs/socket.io.min.js"></script>
+	<script type="text/javascript">
+
+	var that = this;
+	
+	if (typeof console == 'undefined') {
+			var console = new Object();
+			console.log = function() {
+			};
+			console.error = function() {
+			};
+			console.debug = function() {
+			};
+			console.warn = function() {
+			};
+	};
+	
+	var production = (location.hostname.indexOf('ewe') != -1);
+	var port = production ? ':8080' : ':8080';
+	var fbId = production ? '219532624878753' : '1414632378751479';
+	
+	console.log('production: ',production);
+	
+	window.fbAsyncInit = function() {
+		// init the FB JS SDK
+		FB.init({
+		appId      : fbId,                        // App ID from the app dashboard
+		channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel file for x-domain comms
+		status     : true,                                 // Check Facebook Login status
+		xfbml      : true                                  // Look for social plugins on the page
+		});
+
+		// Additional initialization code such as adding Event Listeners goes here
+	};
+
+	// Load the SDK asynchronously
+	(function(d, s, id){
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	
+	
+	// 1. Connect to socket server on remote host.
+	var socket = io.connect('http://'+location.hostname+port, {
+		transports: ['websocket', 'xhr-polling', 'flashsocket', 'htmlfile', 'xhr-multipart', 'jsonp-polling'],
+		'try multiple transports': true
+	});
+	
+	// 2. This will fire immediately after you connect.
+	socket.on('connect', function () {
+	 	console.log('socket.on(connect)');
+	 	
+	 	// 3. Send a message to the socket server saying what type of connection it is.
+	 	socket.emit('CONNECT_MOBILE_APP', { lang: "en", roomId:"demo"});
+
+	  });
+	
+	// 4. This will fire after the socket server has been notified that a mobile app has connected and everything needed has been initialized on the server.
+	socket.on('ROOM_READY', function (data) {
+		console.log('ROOM_READY ', data);
+	});
+	
+	// 5. If the socket connection is closed by the server do something...
+	socket.on("disconnect", function() {
+		console.log('Disconnected!');
+		//document.location.reload(true);
+	});
+	
+	// 6. The rest of these functions are asynchronously called by the server. 
+	
+	socket.on('ADD_USER', function (socketID, data){
+		console.log('ADD_USER');
+		//console.log('socket.ADD_USER', arguments);
+		//players.push(new player(socketID));
+	});
+	
+	// usually when validation fails.
+	socket.on('REGISTRATION_ERROR', function (err){
+		alert('REGISTRATION_ERROR');
+		console.log('REGISTRATION_ERROR: ',err);
+	});
+	
+	// Returns a list of registered users. Used for any leaderboards
+	socket.on('REGISTRED_USERS', function (users){
+		console.log('REGISTRED_USERS: ',users);
+	});
+	
+	// good to go, call start your game or whatever.
+	socket.on('REGISTRATION_SUCCESS', function (user){
+		console.log('REGISTRATION_SUCCESS: ',user);
+	});
+	
+	// Get the leaderboard
+	 socket.emit('GET_REGISTERED_USERS');
+	
+	
+	$('#submit-register').bind( "click", function() {
+	  console.log('submit-register.click()');
+	  
+	  var user = {
+	  	type: "custom",
+	  	socialId: '',
+	  	score: 0,
+	  	ranking: 0
+	  };
+	  
+		$('#userInfo-login .form#register input').each(function(i, el) {
+			user[$(el).attr('name')] = $(el).val();
+		});
+		
+		console.log('user object: ',user);
+		socket.emit('USER_INFORMATION_SUBMIT', user, function(response){
+			console.log(response);	
+		});
+	});
+	
+	$('#submit-score').bind( "click", function() {
+	  console.log('submit-score.click()');
+	  
+	  var user = {};
+	  
+		$('#userInfo-login .form#update-score input').each(function(i, el) {
+			user[$(el).attr('name')] = $(el).val();
+		});
+		user.score = Number(user.score);
+		console.log('user object: ',user);
+		socket.emit('UPDATE_SCORE', user, function(response){
+			console.log(response);	
+		});
+	});
+	
+	$('#submit-remove').bind( "click", function() {
+	  console.log('remove-score.click()');
+	  
+	  var user = {};
+	  
+		$('#userInfo-login .form#remove input').each(function(i, el) {
+			user[$(el).attr('name')] = $(el).val();
+		});
+		console.log('user object: ',user);
+		socket.emit('REMOVE_USER', user, function(response){
+			console.log(response);	
+		});
+	});
+	
+	
+
+</script>
+	
+</body>
+</html>

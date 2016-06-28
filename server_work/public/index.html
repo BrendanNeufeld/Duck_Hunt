@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Desktop Client</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<style type="text/css">
+	
+	</style>
+</head>
+<body>
+	<div id="fb-root"></div>
+	<div id="popups">
+	<div id="userInfo-login" class="popup visible" style="margin-left: -265.5px; margin-top: 20px;">
+			<div class="group">
+                <h1>Create Room</h1>
+                <!--<p>Log in instructions...</p>-->
+            </div>
+            <!-- <div class="group">
+            <p>Log in with your preferred social account to get instant access:</p>
+            <p><a id='facebook-login'><img src="/img/fb-login-btn.png" /></a>&nbsp;&nbsp;<a id='twitter-login'><img src="/img/sign-in-with-twitter-gray.png" /></a></p>
+            </div>-->
+            <div class="group hidden" id="error-messages">
+            </div>
+
+            <div class="group form" id="create">
+                <label class="required"><b>Room ID</b>
+                    <input type="text" name="roomId" value="demo" maxlength="4">
+                </label>
+            </div>
+            <a id="submit-create" class="button-generic submit">
+                <div class="btn-right-wrapper">
+                    <div class="btn-mid-wrapper">
+                        create
+                    </div>
+                </div>
+            </a>
+            <br/>&nbsp;<br/>&nbsp;
+
+	</div>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/js/libs/jquery-1.9.1.min.js"><\/script>')</script>
+	<script type="text/javascript" src="/js/libs/socket.io.min.js"></script>
+	<script type="text/javascript">
+
+	var that = this;
+
+	var production = (location.hostname.indexOf('ewe') != -1);
+	var port = production ? ':8080' : ':8080';
+	var fbId = production ? '219532624878753' : '1414632378751479';
+	
+    $('#submit-create').bind( "click", function(e) {
+       var data = {};   
+        $('#userInfo-login .form#create input').each(function(i, el) {
+            data[$(el).attr('name')] = $(el).val();
+        });
+        fromFlash_connectDesktopClient(data);
+        
+    });
+	
+	// Connect to socket server on remote host.
+	var socket = io.connect('http://'+location.hostname+port, {
+		transports: ['websocket', 'xhr-polling', 'flashsocket', 'htmlfile', 'xhr-multipart', 'jsonp-polling'],
+		'try multiple transports': true
+	});
+	
+	socket.on("disconnect", function() {
+        console.log('Disconnected!');
+    });
+	
+	socket.on('connect', function() {
+		console.log('connected');
+	});
+		  
+	
+
+	socket.on('ROOM_READY', function (data) {
+		toFlash_roomReady(data);
+	});
+	socket.on('HUNTER_LEADERBOARD_UPDATE', function (data) {
+        toFlash_hunterLeaderboardUpdate(data);
+    });
+    socket.on('DUCK_LEADERBOARD_UPDATE', function (data) {
+        toFlash_duckLeaderboardUpdate(data);
+    });
+	
+	socket.on('HIT', function (data) {
+        toFlash_hit(data);
+    });
+    
+
+
+	// CHRIS YOU ONLY NEED TO WORRY ABOUT THE FUNCTIONS BELOW, I WILL SET UP THE NODE FUNCTIONS
+
+	
+	//flash methods
+	//1. Let the server know a desktop client is connecting
+	function fromFlash_connectDesktopClient(data){
+	    console.log('fromFlash_connectDesktopClient()',data);
+	    socket.emit('CONNECT_DESKTOP', {
+            lang: 'en',
+            desktopUrl: window.location.href,
+            mobileUrl: window.location.href+'mobile',
+            roomId: data.roomId
+        }, function(data) {
+            console.log('connect: '+data);
+        });
+	}
+	
+	function toFlash_roomReady(data){
+	    console.log('toFlash_roomReady()',data);
+	}
+	
+	function toFlash_hunterLeaderboardUpdate(data){
+	    console.log('toFlash_hunterLeaderboardUpdate()',data);
+	}
+	
+	function toFlash_duckLeaderboardUpdate(data){
+        console.log('toFlash_duckLeaderboardUpdate()',data);
+    }
+    function toFlash_hit(data){
+        console.log('toFlash_hit()',data);
+    }
+</script>
+	
+</body>
+</html>

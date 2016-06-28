@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type='text/javascript'>
+			window.mod_pagespeed_start = Number(new Date());
+		</script>
+		<style type="text/css">
+			body {
+				font-family: sans-serif
+			}
+			.main {
+				border: 1px solid #000;
+				box-shadow: 10px 10px 5px #888;
+				border-radius: 12px;
+				padding: 20px;
+				background-color: #ddd;
+				margin: 25px;
+				width: 450px;
+				margin-left: auto;
+				margin-right: auto
+			}
+			.logo {
+				width: 275px;
+				margin-left: auto;
+				margin-right: auto;
+				display: block;
+				padding: 15px
+			}
+			.container {
+				-webkit-perspective: 300;
+				perspective: 300
+			}
+		</style>
+	</head>
+	<body>
+		<noscript>
+			<meta HTTP-EQUIV="refresh" content="0;url='http://www.html5rocks.com/en/tutorials/device/orientation/deviceorientationsample.html?ModPagespeed=noscript'" />
+			<style>
+				<!--table,div,span,font,p{display:none} -->
+			</style>
+			<div style="display:block">
+				Please click <a href="http://www.html5rocks.com/en/tutorials/device/orientation/deviceorientationsample.html?ModPagespeed=noscript">here</a> if you are not redirected within a few seconds.
+			</div>
+		</noscript>
+		<div class="main">
+			<h2>Device Orientation</h2>
+			<table>
+				<tr>
+					<td>Event Supported</td>
+					<td id="doEvent"></td>
+				</tr>
+				<tr>
+					<td>Tilt Left/Right [gamma]</td>
+					<td id="doTiltLR"></td>
+				</tr>
+				<tr>
+					<td>Tilt Front/Back [beta]</td>
+					<td id="doTiltFB"></td>
+				</tr>
+				<tr>
+					<td>Direction [alpha]</td>
+					<td id="doDirection"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="container" style="-webkit-perspective: 300; perspective: 300;">
+			<img src="http://1-ps.googleusercontent.com/x/s.html5rocks-hrd.appspot.com/www.html5rocks.com/en/tutorials/device/orientation/html5_logo.png.pagespeed.ce.TghJxfY49n.png" id="imgLogo" class="logo">
+		</div>
+		<a href="/mobile/detectMobileBrowser.html" target="_self">Back</a>
+		<script type="text/javascript">
+			init();
+			var count = 0;
+			function init() {
+				if (window.DeviceOrientationEvent) {
+					document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+					window.addEventListener('deviceorientation', function(eventData) {
+						var tiltLR = eventData.gamma;
+						var tiltFB = eventData.beta;
+						var dir = eventData.alpha
+						deviceOrientationHandler(tiltLR, tiltFB, dir);
+					}, false);
+				} else {
+					document.getElementById("doEvent").innerHTML = "Not supported on your device or browser.  Sorry."
+				}
+			}
+
+			function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+				document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+				document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+				document.getElementById("doDirection").innerHTML = Math.round(dir);
+				var logo = document.getElementById("imgLogo");
+				logo.style.webkitTransform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
+				logo.style.MozTransform = "rotate(" + tiltLR + "deg)";
+				logo.style.transform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
+			}
+		</script>
+		<script pagespeed_no_defer="">
+(function(){var e=window,f=Math,g="round",h="performance",k="&rit_script=",r="&rit_link=",y="&rit_img=",z="&rit_css=",A="&nttfb=",B="&nfd=",C="&ndt=",D="&nct=",E="&nbt=",F="&mfd=",G="&attfb=",H="&afd=",I="&adt=",J="&act=",K="&abt=",L="";e.pagespeed=e.pagespeed||{};var M=e.pagespeed;
+M.getResourceTimingData=function(){if(e[h]&&(e[h].getEntries||e[h].webkitGetEntries)){for(var s=0,t=0,l=0,u=0,m=0,v=0,n=0,w=0,p=0,x=0,q=0,c={},d=e[h].getEntries?e[h].getEntries():e[h].webkitGetEntries(),b=0;b<d.length;b++){var a=d[b].duration;0<a&&(s+=a,++l,t=f.max(t,a));a=d[b].connectEnd-d[b].connectStart;0<a&&(v+=a,++n);a=d[b].domainLookupEnd-d[b].domainLookupStart;0<a&&(u+=a,++m);a=d[b].initiatorType;c[a]?++c[a]:c[a]=1;a=d[b].requestStart-d[b].fetchStart;0<a&&(x+=a,++q);a=d[b].responseStart-d[b].requestStart;
+0<a&&(w+=a,++p)}return H+(l?f[g](s/l):0)+B+l+F+f[g](t)+J+(n?f[g](v/n):0)+D+n+I+(m?f[g](u/m):0)+C+m+K+(q?f[g](x/q):0)+E+q+G+(p?f[g](w/p):0)+A+p+(c.css?z+c.css:L)+(c.link?r+c.link:L)+(c.script?k+c.script:L)+(c.img?y+c.img:L)}return L};M.getResourceTimingData=M.getResourceTimingData;})();
+(function(){var c=encodeURIComponent,f=window,h="performance",k="unload:",l="on",m="load:",n="load",p="ets=",q="beforeunload",r="EventStart",s="?",t="=",u="&url=",v="&ttfb=",w="&req_start=",x="&ref=",y="&r",z="&nt=",A="&nrp=",B="&nav=",C="&ifr=1",D="&ifr=0",E="&htmlAt=",F="&fp=",G="&dwld=",H="&dom_c=",I="&dns=",J="&connect=",K="&ccul=",L="&ccrl=",M="&ccos=",N="&ccis=",O="&cces=",P="&b_csi=",Q="&",R="";f.pagespeed=f.pagespeed||{};var S=f.pagespeed,T=function(a,d,b,e){this.d=a;this.a=d;this.b=b;this.e=e};S.beaconUrl=R;
+T.prototype.c=function(){var a=this.d,d=f.mod_pagespeed_start,b=Number(new Date)-d,a=a+(-1==a.indexOf(s)?s:Q),a=a+p+(this.a==n?m:k),a=a+b;if(this.a!=q||!f.mod_pagespeed_loaded){a+=y+this.a+t;if(f[h]){var b=f[h].timing,e=b.navigationStart,g=b.requestStart,a=a+(b[this.a+r]-e),a=a+(B+(b.fetchStart-e)),a=a+(I+(b.domainLookupEnd-b.domainLookupStart)),a=a+(J+(b.connectEnd-b.connectStart)),a=a+(w+(g-e)),a=a+(v+(b.responseStart-g)),a=a+(G+(b.responseEnd-b.responseStart)),a=a+(H+(b.domContentLoadedEventStart-
+e));f[h].navigation&&(a+=z+f[h].navigation.type);e=-1;b.msFirstPaint?e=b.msFirstPaint:f.chrome&&f.chrome.loadTimes&&(e=Math.floor(1E3*f.chrome.loadTimes().firstPaintTime));e-=g;0<=e&&(a+=F+e)}else a+=b;S.getResourceTimingData&&f.parent==f&&(a+=S.getResourceTimingData());a+=f.parent!=f?C:D;this.a==n&&(f.mod_pagespeed_loaded=!0,(b=f.mod_pagespeed_num_resources_prefetched)&&(a+=A+b),(b=f.mod_pagespeed_prefetch_start)&&(a+=E+(d-b)));S.panelLoader&&(d=S.panelLoader.getCsiTimingsString(),d!=R&&(a+=P+d));
+S.criticalCss&&(d=S.criticalCss,a+=N+d.total_critical_inlined_size+O+d.total_original_external_size+M+d.total_overhead_size+L+d.num_replaced_links+K+d.num_unreplaced_links);this.b!=R&&(a+=this.b);document.referrer&&(a+=x+c(document.referrer));a+=u+c(this.e);S.beaconUrl=a;(new Image).src=a}};S.f=function(a,d,b,e){var g=new T(a,d,b,e);f.addEventListener?f.addEventListener(d,function(){g.c()},!1):f.attachEvent(l+d,function(){g.c()})};S.addInstrumentationInit=S.f;})();
+
+pagespeed.addInstrumentationInit('http://1-ps.googleusercontent.com/beacon?org=104_1_vo', 'load', '&id=1376510302032648', 'http://www.html5rocks.com/en/tutorials/device/orientation/deviceorientationsample.html');
+		</script>
+	</body>
+</html>

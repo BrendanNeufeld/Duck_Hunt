@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="600"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.pnwrain.flashsocket.FlashSocket;
+			import com.pnwrain.flashsocket.events.FlashSocketEvent;
+			
+			import flash.external.ExternalInterface;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			protected var socket:FlashSocket;
+			
+			private var message:String;
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				
+				socket = new FlashSocket("http://duckhunt:8080");
+				socket.addEventListener(FlashSocketEvent.CONNECT, onConnect);
+				socket.addEventListener(FlashSocketEvent.MESSAGE, onMessage);
+				socket.addEventListener(FlashSocketEvent.IO_ERROR, onError);
+				socket.addEventListener(FlashSocketEvent.SECURITY_ERROR, onError);
+				
+				socket.addEventListener("my other event", myCustomMessageHandler);
+				
+				this.log('from flash');
+				Alert.show('something');
+				trace('something');
+			}
+			
+			private function receivedFromJavaScript(value:String):void {
+				//output.appendText("JavaScript says: " + value + "\n");
+			}
+			
+			private function log(message:String):void{
+				ExternalInterface.call("sendToJavaScript", message);
+				Alert.show(message)
+			}
+			
+			protected function myCustomMessageHandler(event:FlashSocketEvent):void{
+				Alert.show('we got a custom event!')	
+			}
+			
+			protected function onConnect(event:FlashSocketEvent):void {
+				
+				clearStatus();
+				
+			}
+			
+			protected function onError(event:FlashSocketEvent):void {
+				
+				setStatus("something went wrong");
+				
+			}
+			
+			protected function setStatus(msg:String):void{
+				
+				status.text = msg;
+				
+			}
+			protected function clearStatus():void{
+				
+				status.text = "";
+				this.currentState = "";
+				
+			}
+			
+			protected function onMessage(event:FlashSocketEvent):void{
+				
+				trace('we got message: ' + event.data);
+				socket.send({msgdata: event.data},"my other event");
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Label id="status" />
+	<s:Label id="glabel" />
+	<mx:TextInput id="myInput" 
+				  width="150" 
+				  text=""/>
+	<mx:Button id="myButton" 
+			   label="Copy Text" 
+			   click="myText.text = myInput.text;
+			   Alert.show('Text Copied!', 'Alert Box', mx.controls.Alert.OK);"/>
+	<mx:TextInput id="myText"/> 
+</s:Application>

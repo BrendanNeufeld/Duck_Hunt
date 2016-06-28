@@ -1,0 +1,28 @@
+{
+  "name": "duk-hunt",
+  "version": "0.0.1-36",
+  "dependencies": {
+    "socket.io": "0.9.x",
+    "express": "3.0.0",
+    "underscore": "~1.4.4",
+    "backbone": "~1.0.0",
+    "ntwitter": "0.2.10"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.1.x"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "subdomain": "duk-hunt",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-watch": "~0.3.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-strip": "~0.2.1",
+    "grunt-contrib-nodeunit": "~0.1.2"
+  }
+}

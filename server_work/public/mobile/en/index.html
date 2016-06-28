@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd" lang="en" xmlns:fb="http://ogp.me/ns/fb#">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>z-3000 Game</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+	    <meta name="keywords" content=""/>
+	    <meta name="author" content="Brendan Neufeld"/>
+	    
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="/css/normalize.css">
+        <!--<link rel="stylesheet" type="text/css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/mobile/css/main.css" />-->
+        <link rel="stylesheet" href="/mobile/css/main.css">
+        <link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/60d70545-e303-49ca-85e1-1ce16823c7f0.css"/>
+        <script src="/js/libs/modernizr-2.6.2.min.js"></script>
+	    <script>
+	        "use strict";
+	        
+	        var windowLoaded = false;
+	        window.onload = function () {
+	            windowLoaded = true;
+	        };
+	        
+	        var _gaq = [['_setAccount', 'UA-xxxxxx-x'], ['_trackPageview']];
+	        
+	        var app = {};	//create namespace - avoid global vars
+	        
+	        var scripts = [];
+	        
+	        var debugMinified = false;
+	        
+	        var doDebug = false;
+	        //alert('wtf')
+	        /*
+		if(((window.location.href).indexOf('localhost') > -1 || (window.location.href).indexOf('.local') > -1 || (window.location.href).indexOf(':8000') > -1) && debugMinified == false){
+			scripts = [
+			'http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js',
+			'../../../js/libs.min.js',
+			'../../../js/config.js',
+			//'../js/utils.js',
+			//'../js/social.js',
+			'../js/Model.js',
+			'../js/View.js',
+			'../js/Controller.js',
+			'../js/App.js',
+			'//connect.facebook.net/en_US/all.js',
+			'//www.google-analytics.com/ga.js'
+			];
+	
+			}else{
+	
+			scripts = ['../../../js/libs.min.js',
+			'http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js',
+			'../../../js/config.min.js',
+			'../js/app.min.js',
+			'//connect.facebook.net/en_US/all.js',
+			'//www.google-analytics.com/ga.js'
+			];
+			}
+	        */
+	        
+	        
+	        Modernizr.load([{
+	            load: ['//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js'],
+	            complete: function(){
+	                if (!window.jQuery) {
+	                    Modernizr.load('../js/libs/jquery-1.8.2.min.js');
+	                }
+	                jQuery.support.cors = true;
+	                 // force cross-site scripting
+					$(document).bind('mobileinit', function () {
+			
+						$.mobile.hashListeningEnabled = false;
+						$.mobile.linkBindingEnabled = false;
+						$.mobile.ajaxEnabled = false;
+			
+					});
+              
+	            }
+	        }, {
+	            load: [
+				//'http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js',
+				//'/mobile/js/libs/jquery.mobile-1.3.0.min.js',
+				'/js/libs.min.js',
+				'/mobile/js/libs/jquery.hammer.js',
+				'/js/config.js',
+				//'../js/utils.js',
+				//'../js/social.js',
+				'/mobile/js/Model.js',
+				'/mobile/js/View.js',
+				'/mobile/js/Controller.js',
+				'/mobile/js/App.js',
+				'//connect.facebook.net/en_US/all.js',
+				'//www.google-analytics.com/ga.js'
+				],
+	            complete: function(){
+	                app.main(app, Modernizr, jQuery, _, Backbone, _gaq, accounting, io);
+					
+					/*FB.init({
+				        appId: 'xxxxxxxxxxxx', // App ID
+				        // channelUrl: '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+				        status: true, // check login status
+				        cookie: true, // enable cookies to allow the server to access the session
+				        xfbml: true // parse XFBML
+				    });*/
+	            }
+	        }]);
+	    </script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+		<div id="fb-root"></div>
+		<!--<div id="debug">Log</div>-->
+		<header>
+			<img src="/mobile/img/header-logo.png" width="163px" height="20px"/>
+		</header>
+		<article role="main">
+		  	<div id="no-js">
+				Loading
+		  	</div>
+		    <!-- Add your site or application content here -->
+		    
+		    <script type="text/_template" id="button-tmpl">
+		    	<a id="submit" class="button-generic submit">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ start }}</div></div>
+				</a>
+
+			</script>
+			
+		   <script type="text/_template" id="message-tmpl">
+			<section id="message">
+				<p>{{ room }}{{ roomId }}<br/><br/>
+					{{ status }}{{ statusMessage }}
+					</p>
+			</section>
+	      </script>
+		   
+		   <script type="text/_template" id="debug-tmpl">
+				<section id="debug" class="">
+
+					<p><b>{{ game }}</b>{{ gameId }}&nbsp;
+					<b>{{ status }}</b>{{ statusMessage }}
+					</p>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="screens-tmpl">
+				<div id="screens" class="hidden">
+				</div>
+			</script>
+			
+			<script type="text/_template" id="landing-intro-screen-tmpl">
+				<section id="landing-intro-screen" class="hidden screen">
+					<h1>{{ landingIntroScreenTitle }}</h1>
+					<p id='landing-intro-instructions' class='screen-intro'>
+						{{ landingIntroInstructions }}
+					</p>
+				</section>
+			</script>
+		   
+		   <script type="text/_template" id="start-screen-tmpl">
+				<section id="start-screen" class="hidden screen">
+					<h1>{{ startScreenTitle }}</h1>
+					<p>
+						{{ startInstructions }}
+					</p>
+				</section>
+			</script>
+		   
+		   	<script type="text/_template" id="popups-tmpl">
+				<div id="popups" class="hidden">
+				</div>
+			</script>
+		   
+			<script type="text/_template" id="enter-game-code-screen-tmpl">
+			    <section id="enter-game-code" class="screen hidden">
+			       <!-- <h1>{{ registrationFormTitle }}</h1>-->
+			
+			        <div class='loader'></div>
+			        
+			        <div class="group">
+			        	<h1>{{ enterGameCodeTitle }}</h1>
+						<!---<p>{{ enterGameCodeInstructions }}</p>-->
+			        </div>
+			        <div class="group hidden" id="error-messages">
+			            <em for="gameCode" class="error">{{ errors.validation.gameCode }}</em>
+			            <em for="gameCodeIncorrect" class="error">{{ errors.validation.gameCodeIncorrect }}</em>
+			        </div>
+			        
+			        <div class="group form">
+			            <label class="required">
+			                <input type="text" name="gameCode" autocapitalize="off" autocorrect="off" value="{- gameCode -}" maxlength="50">
+			                <a class="info"><i></i></a>
+			            </label>
+			        </div>
+			        <a id="submit" class="button-generic submit final-cta">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ go }}</div></div>
+					</a>
+			    </section>
+			</script>
+			
+			<script type="text/_template" id="bat-selection-screen-tmpl">
+				<div id="carousel" class="screen hidden">
+					<h1>{{ chooseYourBat }}</h1>
+					
+					<nav><a href="#prev" class="prev"></a><a href="#next" class="next"></a></nav>
+					
+					<a class="button-generic submit" id="select-bat-btn">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ select }}</div></div>
+					</a>
+					
+        			<ul>
+        				
+			        </ul>
+			    </div>
+			</script>
+			
+			<script type="text/_template" id="bat-selection-screen-item-tmpl">
+				<li class="{{ elClass }}"><img src="{{ img }}" width="65px" height="421px"/> </li>
+			</script>
+		  
+		   <script type="text/_template" id="game-get-ready-screen-tmpl">
+				<section id="game-get-ready-screen" class="hidden screen">
+					<h1>{{ gameGetReadyTitle }}</h1>
+					<p id='game-connected-instructions' class='screen-intro'>
+						{{ count }}
+					</p>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-bat-mode-screen-tmpl">
+				<section id="game-get-ready-popup" class="hidden screen">
+					<img src="/mobile/img/bat-1.png" width="65px" height="421px"/>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-complete-share-tmpl">
+				<section id="game-complete" class="hidden screen">
+					<h1>{{ gameCompleteTitle }}</h1>
+					<p id='game-complete-instructions' class='screen-intro'>
+						{{ gameCompleteMobileInstructions }}
+					</p>
+				</section>
+			</script>
+			
+		   <script type="text/_template" id="connection-error-popup-tmpl">
+				<div id="error-popup" class="screen hidden">
+				<h1>{{ errorTitle }}</h1>
+				<p>
+				{{  errorDescription }}
+				</p>
+				<a id="submit" class="button-generic submit final-cta">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ reconnect }}</div></div>
+				</a>
+				</div>
+			</script>
+		   
+		   <script type="text/_template" id="test-section-tmpl">
+			<section id="test-section">
+			  	<h1>{{ h1Text }}</h1>
+			  	<div id="ca-div">{{ caText }}</div>
+				<div id="us-div">{{ usText }}</div>
+				<div id="mex-div">{{ mexText }}</div>
+			</section>
+	      </script>
+	      
+	      <script type="text/_template" id="test-list-tmpl">
+	
+			<ul id="test-list">
+			</ul>
+	      </script>
+	      
+	      <script type="text/_template" id="test-listItem-tmpl">
+			<li>
+				{{ text }}
+			</li>
+	      </script>
+      		
+		</article>
+		<!--<footer>&nbsp;</footer>-->
+    </body>
+</html>

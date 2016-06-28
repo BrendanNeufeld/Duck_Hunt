@@ -1,0 +1,869 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en" xmlns:fb="http://ogp.me/ns/fb#">
+	<!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>z-3000 Game</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<meta name="keywords" content=""/>
+		<meta name="author" content="Brendan Neufeld"/>
+		<!--<link rel="image_src" type="image/jpeg" href="http://www.domain.com/path/icon-facebook.gif" />-->
+		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+		<link rel="stylesheet" href="/css/normalize.css">
+		<link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/60d70545-e303-49ca-85e1-1ce16823c7f0.css"/>
+		<link rel="stylesheet" href="/css/main.css">
+		<!--<link rel="stylesheet" href="/css/main_game.css">-->
+		<link rel="stylesheet" href="/mediaElement/mediaelementplayer.min.css" />
+		<!--<script src="/mediaElement/mediaelement-and-player.js"></script>-->
+		<script src="/js/libs/modernizr-2.6.2.min.js"></script>
+		<script>
+			"use strict";
+
+			var windowLoaded = false;
+			window.onload = function() {
+				windowLoaded = true;
+			};
+
+			var _gaq = [['_setAccount', 'UA-xxxxxx-x'], ['_trackPageview']];
+			
+			var FB;
+
+			var app = {};
+			//create namespace - avoid global vars
+
+			var scripts = [];
+
+			var debugMinified = false;
+
+			Modernizr.load([{
+				load : '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js',
+				complete : function() {
+					if (!window.jQuery) {
+						Modernizr.load('/js/libs/jquery-1.8.2.min.js');
+					}
+					jQuery.support.cors = true;	// force cross-site scripting
+				}
+			}, {
+				load : ['/js/libs.min.js', '/js/config.js', '/mediaElement/mediaelement-and-player.min.js', '//connect.facebook.net/en_US/all.js', '//platform.twitter.com/widgets.js', '//www.google-analytics.com/ga.js', '/js/libs/sessvars.js', '/js/Model.js', '/js/View.js', '/js/Controller.js', '/js/App.js'],
+				complete : function() {
+
+					app.main(app, Modernizr, jQuery, _, Backbone, _gaq, accounting, io, MediaElementPlayer, FB);
+
+					}
+					}]);
+		</script>
+	</head>
+	<body>
+		<!--[if lt IE 7]>
+		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+		<![endif]-->
+		<div id="fb-root"></div>
+		
+		<header class="transparent">
+			<div id="header-logo" class="divider-right"><a href="/en/"><img src="/img/header-logo.png" alt="LOUISVILLE Slugger" /></a></div>
+			<!--<div id="header-ranking"><h3>RANKING</h3><ol><li><span class="ranking-rank">1</span>&nbsp;<span class="ranking-user-name">Scott F.</span><span class="ranking-distance">345</span>&nbsp;<sup>FT</sup></li><li><span class="ranking-rank">2</span>&nbsp;<span class="ranking-user-name">Joe S.</span><span class="ranking-distance">325</span>&nbsp;<sup>FT</sup></li></ol></div>
+			<nav><a href="#leaderboard" id="nav-leaderboard-btn">LEADERBOARD</a><a href="#nav-twitter" id="nav-twitter-btn"></a><a href="#nav-facebook" id="nav-facebook-btn"></a></nav>-->
+			<!--Global Nav -->
+		</header>
+		<div id="page-preloader" class="ajax-loader visible"></div>
+		<article role="main">
+			
+			<div id="no-js">
+				<hgroup>
+					<h1>JAVASCRIPT IS REQUIRED</h1>
+					<h2>It needs to be turned on to use this site</h2>
+				</hgroup>
+				<p>
+					Why is it required
+				</p>
+				<p>
+					How to turn it on
+				</p>
+				<p>
+					What to do if you can't
+				</p>
+			</div>
+			<!--<fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button>-->
+			<!-- Add your site or application content here -->
+			<!--
+			<video width="100%" height="100%" poster="/game/video/cgiball_red_h264_trimmed.jpg" controls="controls" preload="auto" id='testVid'>
+						<source type="video/mp4" src="/game/video/cgiball_red_h264_trimmed.mp4" />
+						<source type="video/webm" src="/game/video/cgiball_red_h264_trimmed.webm" />
+						<source type="video/ogg" src="/game/video/cgiball_red_h264_trimmed.ogv" />
+						<object width="100%" height="100%" type="application/x-shockwave-flash" data="/mediaElement/flashmediaelement.swf"> 		
+							<param name="movie" value="/mediaElement/flashmediaelement.swf" /> 
+							<param name="flashvars" value="controls=true&amp;file=/game/video/cgiball_red_h264_trimmed.mp4" />	
+							<img src="/game/video/cgiball_red_h264_trimmed.jpg" width="100%" height="100%" alt="Here we are" 
+								title="No video playback capabilities" />
+						</object>
+			</video>
+			-->
+			
+			<script type="text/_template" id="header-ranking-tmpl">
+				<div id="header-ranking"><h3>{{ leaders }}</h3><ol></ol></div>
+			</script>
+			
+			<script type="text/_template" id="header-ranking-item-tmpl">
+				<li><span class="ranking-rank">{{ ranking }}</span>&nbsp;&nbsp;<span class="ranking-user-name">{{ userName }}</span>&nbsp;<span class="ranking-distance">{{ maxDistance }}</span>&nbsp;<sup>{{ feet }}</sup></li><
+			</script>
+			
+			<script type="text/_template" id="header-nav-tmpl">
+				<nav><a href="#leaderboard" id="nav-leaderboard-btn">LEADERBOARD</a><a href="https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button" id="nav-twitter-btn"></a><a href="#nav-facebook" id="nav-facebook-btn"></a></nav>
+			</script>
+			<!--<li><span class="ranking-rank">1</span>&nbsp;<span class="ranking-user-name">Scott F.</span><span class="ranking-distance">345</span>&nbsp;<sup>FT</sup></li><li><span class="ranking-rank">2</span>&nbsp;<span class="ranking-user-name">Joe S.</span><span class="ranking-distance">325</span>&nbsp;<sup>FT</sup></li>-->
+			<script type="text/_template" id="videos-tmpl">
+				<section id='videos'>
+					<!-- videos go here -->
+				</section>
+			</script>
+			
+			<script type="text/_template" id="games-stats-tmpl">
+				<section id='game-stats' class='stats'>
+					<div id="ranking" class='stat'>{{ ranking }}</div>
+					<div id="ranking-label" class='stat-label'>{{ rankingText }}</div>
+					<div id="pitch-count" class='stat'>{{ swingTotal }}/{{ swingsAllowed }}</div>
+					<div id="pitches-count-label" class='stat-label'>{{ pitchesLeftText }}</div>
+					<div id="max-distanse" class='stat'>{{ maxDistance }}{{ feet }}</div>
+					<div id="ranking-label" class='stat-label'>{{ maxDistanceText }}</div>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="nav-games-stats-tmpl">
+				<div id='nav-game-stats' class='stats'>
+					<ul>
+						<li>
+							<img src="/img/pitches-left-icon.png" class="nav-stat-icon"/>
+							<span class='nav-stat'>{{ swingTotal }}<sup>/{{ swingsAllowed }}</sup></span>
+							<span class='nav-stat-label'>{{ pitchesLeftText }}</span>
+						</li>
+						<li>
+							<img src="/img/distance-icon-small.png" class="nav-stat-icon"/>
+							<span class='nav-stat'>{{ maxDistance }}<sup>{{ feet }}</sup></span>
+							<span class='nav-stat-label'>{{ maxDistanceText }}</span>
+						</li>
+						<li>
+							<img src="/img/ranking-icon-small.png" class="nav-stat-icon"/>
+							<span class='nav-stat'>{{ ranking }}<sup></sup></span>
+							<span class='nav-stat-label'>{{ rankingText }}</span>
+						</li>
+					</ul>
+				</div>
+			</script>
+			
+			<script type="text/_template" id="leaderboard-popup-tmpl">
+				<section id="leaderboard-paginator" class="hidden popup">
+					<a class="popup-close-btn"></a>
+					<div class="leaderboard-header">
+						<h1>{{ leaderboardTitle }}</h1>
+					</div>
+					<div id="leaderboard-search">
+						<input id="leaderboardSearchName" type="text" name="userName" value="{{ selectedPlayer }}"/>
+						<a class="search-btn"></a>
+					</div>
+					<div id="leaderboard-wrapper"></div>
+					<!--<div id="leaderboard-navigation">
+						<a id="leaderboard-page-back" class="button-generic back">
+							<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ back }}</div></div>
+						</a>
+						<div id="leaderboard-pages-nav">
+							<nav id="leaderboard-current-pages" class="leaderboard-pages"><a class="leaderboard-page-num">1</a><a class="leaderboard-page-num">2</a><a class="leaderboard-page-num">3</a></nav>
+							<div id="leaderboard-pages-ellipsis"> {{ ellipsis }} </div>
+							<nav id="leaderboard-last-pages" class="leaderboard-pages"><a class="leaderboard-page-num">5</a><a class="leaderboard-page-num">6</a><a class="leaderboard-page-num">7</a></nav>
+						</div>
+						<a id="leaderboard-page-next" class="button-generic next">
+							<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ next }}</div></div>
+						</a>
+					</div>-->
+					<div id="leaderboard-navigation">
+						<a id="leaderboard-page-back" class="button-generic back">
+							<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ back }}</div></div>
+						</a>
+					 <div class="navwrap">
+					 	
+					  <ul>
+
+					  </ul>
+					 </div>
+					 <a id="leaderboard-page-next" class="button-generic next">
+							<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ next }}</div></div>
+						</a>
+					 <div class="clearer"></div>
+					</div>
+				</section>
+			</script>
+			
+			
+			<script type="text/_template" id="leaderboard-search-tmpl">
+
+				<div id="leaderboard-search">
+					<input id="leaderboardSearchName" type="text" name="userName" value="{{ selectedPlayer }}"/>
+					<a class="search-btn"></a>
+				</div>
+				
+			</script>
+
+			
+			<script type="text/_template" id="leaderboard-tmpl">
+				
+				<table class="leaderboard">
+					<tr>
+						<th class="td-ranking"></th><th class="td-userName">{{ playerTxt }}</th><th class="td-distance">{{ distanceTxt }}</th><th class="td-discount">{{ discountTxt }}</th>
+					</tr>
+				</table>
+			</script>
+			
+			<script type="text/_template" id="leaderboard-item-tmpl">
+				<tr class="{{ page }} game {{ visibility }}{{ selected }}">
+					<td class="td-ranking">{{ ranking }}.</td><td class="td-userName">{{ userName }}</td><td class="td-distance">{{ maxDistance }}<sup>{{ feet }}</sup></td><td class="td-discount">{{ dollarSignLeft }}{{ discount }}{{ dollarSignRight }}</td>
+				</tr>
+			</script>
+			
+			<script type="text/_template" id="leaderboard-item-tmpl">
+				<div class="paginator-nav">
+					<div class="paginator-nav-btn" id="prev-btn"></div>
+					<nav class="numeric-stepper">
+
+					</nav>
+					<div class="paginator-nav-btn" id="next-btn"></div>
+				</div>
+			</script>
+			<!--
+			<script type="text/_template" id="paginator-tmpl">
+				<section id="leaderboard-paginator" class="hidden popup">
+					<a class="popup-close-btn"></a>
+					<div class="leaderboard-header">
+						<h1>{{ leaderboardTitle }}</h1>
+					</div>
+					<table class="leaderboard">
+
+						<tr>
+							<th class="td-ranking"></th><th class="td-userName">{{ playerTxt }}</th><th class="td-distance">{{ distanceTxt }}</th><th class="td-discount">{{ discountTxt }}</th>
+						</tr>
+					</table>
+					<div class="paginator-nav">
+						<div class="paginator-nav-btn" id="prev-btn"></div>
+						<nav class="numeric-stepper">
+
+						</nav>
+						<div class="paginator-nav-btn" id="next-btn"></div>
+					</div>
+				</section>
+			</script>
+			-->
+
+			
+			<script type="text/_template" id="swing-stats-tmpl">
+				<div id='swing-stats' class='stats popup hidden'>
+					<h1>{{ distance }}</h1>
+				</div>
+			</script>
+			
+			<script type="text/_template" id="video-tmpl">
+				<section class='game-video hidden' id='{{ id }}' width="50%">
+				<video width="100%" height="100%" poster="{{ poster }}" preload="true" id='{{ id }}'>
+				<source type="video/mp4" src="{{ sourceMp4 }}" /></source>
+				<source type="video/webm" src="{{ sourceWebm }}" />
+				<source type="video/ogg" src="{{ sourceOgv }}" />
+				<object width="100%" height="100%" type="application/x-shockwave-flash" data="/mediaElement/flashmediaelement.swf">
+				<param name="movie" value="/mediaElement/flashmediaelement.swf" />
+				<param name="flashvars" value="controls=false&amp;file={{ sourceMp4 }}" />
+				<img src="{{ poster }}" width="100%" height="100%" alt="Here we are"
+				title="No video playback capabilities" />
+				</object>
+				</video>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="leaderboard-tmpl">
+				<table class="leaderboard">
+					<!--<caption>{{ leaderboardTitle }}</caption>-->
+					<tr>
+						<th>{{ rankTxt }}</th><th>{{ playerTxt }}</th><th>{{ distanceTxt }}</th>
+					</tr>
+				</table>
+			</script>
+			
+			<script type="text/_template" id="leaderboard-item-tmpl">
+				<tr>
+					<td>{{ ranking }}</td><td>{{ userName }}</td><td>{{ maxDistance }}</td>
+				</tr>
+			</script>
+			
+			<script type="text/_template" id="your-rank-tmpl">
+				<table class="leaderboard">
+					<!--<caption>{{ leaderboardTitle }}</caption>-->
+					<tr>
+						<th>{{ rankTxt }}</th><th>{{ playerTxt }}</th><th>{{ distanceTxt }}</th>
+					</tr>
+					<tr>
+						<td>{{ ranking }}</td><td>{{ userName }}</td><td>{{ maxDistance }}{{ feet }}</td>
+					</tr>
+				</table>
+			</script>
+
+			<script type="text/_template" id="navigation-tmpl">
+				<nav>
+				<h1>{{ text }}</h1>
+
+				</nav>
+			</script>
+
+			<script type="text/_template" id="nav-list-tmpl">
+				<ul>
+				<!-- nav items go here -->
+				</ul>
+			</script>
+
+			<script type="text/_template" id="nav-item-tmpl">
+				<li id="{{ id }}"><a href="#video/{{ id }}">{{ text }}</a></li>
+			</script>
+
+			<script type="text/_template" id="test-section-tmpl">
+				<section id="test-section">
+				<h1>{{ h1Text }}</h1>
+				<div id="ca-div">{{ caText }}</div>
+				<div id="us-div">{{ usText }}</div>
+				<div id="mex-div">{{ mexText }}</div>
+				</section>
+			</script>
+
+			<script type="text/_template" id="debug-tmpl">
+				<section id="debug" class="hidden">
+					<h1>Debug: </h1>
+					<p>{{ game }}{{ gameId }}<br/><br/>
+					{{ status }}{{ statusMessage }}
+					</p>
+				</section>
+			</script>
+
+			<script type="text/_template" id="test-list-tmpl">
+
+				<ul id="test-list">
+
+				</ul>
+			</script>
+
+			<script type="text/_template" id="test-listItem-tmpl">
+				<li>
+				{{ text }}
+				</li>
+			</script>
+			
+			<script type="text/_template" id="popups-tmpl">
+				<div id="popups" class="hidden">
+				</div>
+			</script>
+			
+			<script type="text/_template" id="screens-tmpl">
+				<section id="screens" class="hidden">
+				</section>
+			</script>
+			
+			<script type="text/_template" id="screen-tmpl">
+				<section id="{{ id }}" class="hidden screen">
+				</section>
+			</script>
+			
+			
+			<script type="text/_template" id="overlays-tmpl">
+				<section id="overlays" class="hidden">
+				</section>
+			</script>
+			
+			<script type="text/_template" id="overlay-tmpl">
+				<div id="{{ id }}" class="hidden overlay">
+				</div>
+			</script>
+			
+			<script type="text/_template" id="landing-animation-tmpl">
+				<div id="landing-animation" class="hidden overlay">
+					<img src="/img/instructions-step1.png" id="instruction-step1" class="transparent"/>
+					<img src="/img/instructions-step2.png" id="instruction-step2" class="transparent"/>
+					<img src="/img/instructions-step3.png" id="instruction-step3" class="transparent">
+					<a href="#play-ball" id="instruction-cta"><img src="/img/instructions-cta.png" alt="PLAY BALL" class="transparent"/></a>
+					
+				</div>
+			</script>
+			
+			<script type="text/_template" id="landing-intro-popup-tmpl">
+				<section id="landing-intro-screen" class="hidden popup">
+					<h1>{{ landingIntroScreenTitle }}</h1>
+					<p id='landing-intro-instructions' class='popup-intro'>
+						{{ landingIntroInstructions }}
+					</p>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-connect-popup-tmpl">
+				<section id="game-connect-popup" class="hidden popup">
+					<h1>{{ gameConnectTitle }}</h1>
+					<div class="connect-step"><div class="instruction-step-title">{{ stepOneTitle }}</div><div class="instruction-step-description">{{ stepOneConnect }}</div></div>
+					
+					
+					<div id="connect-step-one" class="connect-step-img">
+						<div class="connect-step-data">{{ bitlyUrl }}</div>
+					</div>
+					
+					<div class="connect-step"><div class="instruction-step-title">{{ stepTwoTitle }}</div><div class="instruction-step-description">{{ stepTwoConnect }}</div></div>
+					
+					<div id="connect-step-two" class="connect-step-img">
+						<div id="connect-step-img-prompt">{{ enterYourGameCode }}</div>
+						<div class="connect-step-data">{{ gameCode }}</div>
+					</div>
+						
+					<!--
+					<p>
+						<b>{{ welcome }}&nbsp;{{ userName }}.</b><br/>
+					</p>
+					<p id='game-connect-instructions' class='popup-intro'>
+						{{ gameConnectInstructions }}
+					</p>
+					<p>
+						{{ gameCodeText }} <b>{{ gameCode }}</b>
+					</p>
+					<p>
+						{{ bitlyUrlText }} {{ bitlyUrl }}
+					</p>
+					<p>
+						{{ mobileUrlText }} {{ mobileUrl }}
+					</p>
+					
+					<p>
+						{{ qrCodeText }}<br/><img src="{{ qrCodeUrl }}" id="qr-code"/>
+					</p>
+					-->
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-connected-popup-tmpl">
+				<section id="game-connected" class="hidden popup">
+					<h1>{{ gameConnectedTitle }}</h1>
+					<p id='game-connected-instructions' class='popup-intro'>
+						{{ gameConnectedInstructions }}
+					</p>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="pro-game-intro-popup-tmpl">
+				<section id="pro-game-intro" class="hidden popup">
+					<h1>{{ proGameIntroTitle }}</h1>
+					<p>{{ readyToPlay }}&nbsp;{{ youHave }}&nbsp;{{ remainingSwings }} {{ swingsLeft }} </p>
+					<!---<a id="close" class="button-generic">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ close }}</div></div>
+					</a>-->
+				</section>
+			</script>
+			
+			<script type="text/_template" id="practice-swings-intro-popup-tmpl">
+				<section id="practice-swings-intro" class="hidden popup">
+					<h1>{{ practiceSwingsTitle }}</h1>
+					<p>{{ youHave }}&nbsp;{{ practiceRemainingSwings }} {{ practiceSwingsLeft }} </p>
+					<!--<a id="close" class="button-generic">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ close }}</div></div>
+					</a>-->
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-complete-share-popup-tmpl">
+				<section id="game-complete-share-popup" class="game-complete hidden popup">
+					<h1>{{ gameCompleteTitle }}</h1>
+					<ul>
+						<li>
+							<img src="/img/distance-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ maxDistance }}<sup>{{ feet }}</sup></span>
+							<div class="final-stat-text">{{ yourLongestHit }}</div>
+						</li>
+						<li class="second">
+							<img src="/img/ranking-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ ranking }}</span>
+							<div class="final-stat-text">{{ yourRanking }}</div>
+						</li>
+						<li class="third">
+							<img src="/img/dollar-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ discount }}</span>
+							<div class="final-stat-text">{{ yourPrice }}</div>
+						</li>
+					</ul>
+
+					<hr/>
+					<div class="final-cta-row">
+					<div class="final-cta-text">
+						{{ gameCompleteShareInstructions }}
+					</div>
+					<a id="fb-share" class="final-cta" style='text-decoration:none;' type="icon_link" href="javascript: void(0)"> <img src="/img/facebook-icon.png" width="34" height="32" alt="Share"/> </a>
+					<!--<a id="tw-share" class="final-cta" style='text-decoration:none;' type="icon_link" href="javascript: void(0)"> <img src="/img/twitter-icon.png" width="34" height="32" alt="Share"/> </a>-->
+					</div>
+					<hr/>
+					<div class="final-cta-row">
+					<div class="final-cta-text">{{ learnMoreAboutZ000 }}</div>
+					<a id="learn-more" class="button-generic submit final-cta">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ learnMore }}</div></div>
+					</a>
+					</div>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-complete-popup-tmpl">
+				<section id="game-complete-popup" class="hidden popup game-complete">
+					<h1>{{ gameCompleteTitle }}</h1>
+					<ul>
+						<li>
+							<img src="/img/distance-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ maxDistance }}<sup>{{ feet }}</sup></span>
+							<div class="final-stat-text">{{ yourLongestHit }}</div>
+						</li>
+						<li class="second">
+							<img src="/img/ranking-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ ranking }}</span>
+							<div class="final-stat-text">{{ yourRanking }}</div>
+						</li>
+						<li class="third">
+							<img src="/img/dollar-icon-large.png" class="final-stat-icon"/><span class="final-stat">{{ discount }}</span>
+							<div class="final-stat-text">{{ yourPrice }}</div>
+						</li>
+					</ul>
+
+					<hr/>
+					<div class="final-cta-row">
+					<div class="final-cta-text">{{ learnMoreAboutZ000 }}</div>
+					<a id="learn-more" class="button-generic submit final-cta">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ learnMore }}</div></div>
+					</a>
+					</div>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="game-get-ready-overlay-tmpl">
+				<section id="game-get-ready-overlay" class="hidden overlay centered">
+					<h1>{{ gameGetReadyTitle }}</h1>
+					<p id='game-get-ready-instructions' class='popup-intro'>
+						{{ count }}
+					</p>
+				</section>
+			</script>
+			
+			<script type="text/_template" id="swing-retry-tmpl">
+				<section id="swing-retry" class="hidden popup">
+					<h1>{{ errorTitle }}</h1>
+					<p id='swing-retry-instructions' class='popup-intro'>
+						{{ errorDescription }}
+					</p>
+					<!--<div id="close-btn" class="button-generic">
+						<a><span>{{ close }}</span> <i>►</i></a>
+					</div>-->
+				</section>
+			</script>
+			
+<!--
+	        <div class="group">
+        	<p>{{ socialLoginText }}</p>
+			<p><fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button></p>
+        </div>
+-->
+<script type="text/_template" id="UserInfoRegister-popup-tmpl">
+    <section id="user-infoRegister" class="popup hidden">
+       <!-- <h1>{{ registrationFormTitle }}</h1>-->
+
+        <div class='loader'></div>
+        
+        <div class="group">
+        	<h1>{{ register }}</h1>
+			<!--<p>{{ registrationInstructions }}</p>-->
+        </div>
+        
+        <div id="error-messages">
+        	<div class="group left">
+	            <em for="firstName" class="error">{{ firstNameText }}&nbsp;{{ errors.validation.requiredMsg }}</em>
+	            <em for="lastName" class="error">{{ lastNameText }}&nbsp;{{ errors.validation.requiredMsg }}</em>
+	            <em for="userName" class="error">{{ userNameText }}&nbsp;{{ errors.validation.requiredMsg }}</em>
+	            
+            </div>
+            <div class="group right">
+            	<em for="emailAddress" class="error">{{ errors.validation.emailMsg }}</em>
+	            <em for="confirmEmail" class="error">{{ errors.validation.confirmEmailMsg }}</em>
+	            <em for="password" class="error">{{ errors.validation.password }}</em>
+	            <em for="emailAddressUnique" class="error">{{ errors.validation.emailUniqueMsg }}</em>
+	            <em for="userNameUnique" class="error">{{ errors.validation.userNameUniqueMsg }}</em>
+	            <em for="socialIdUnique" class="error">{{ errors.validation.socialIdUniqueMsg }}</em>
+           </div>
+        </div>
+
+        <div class="group form left">
+        	<!--<div class="column left">-->
+            <label class="required"><b>{{ firstNameText }}</b>
+                <input type="text" name="firstName" maxlength="20" value="{- firstName -}">
+                <a class="info"><i></i></a>
+            </label>
+
+            <label class="required"><b>{{ lastNameText }}</b>
+                <input type="text" name="lastName" maxlength="20" value="{- lastName -}">
+                <a class="info"><i></i></a>
+            </label>
+            
+            <label class="required"><b>{{ userNameText }}</b>
+                <input type="text" name="userName" maxlength="30" value="{- userName -}">
+                <a class="info"><i></i></a>
+            </label>
+        </div>
+        <div class="group form right">
+            <label class="required"><b>{{ emailAddressText }}</b>
+                <input type="text" name="emailAddress" value="{- emailAddress -}" maxlength="50">
+                <a class="info"><i></i></a>
+            </label>
+            <label class="required"><b>{{ confirmEmailText }}</b>
+                <input type="text" name="confirmEmail" value="{- confirmEmail -}" maxlength="50">
+                <a class="info"><i></i></a>
+            </label>
+            <label class="required"><b>{{ passwordText }}</b>
+                <input type="password" name="password" value="{- password -}" maxlength="18">
+                <a class="info"><i></i></a>
+            </label>
+        </div>
+        
+        <div class="group left">
+        	<!--<p>{{ socialLoginText }}</p>-->
+        	<hr/>
+			<a id='facebook-register' class="social-btn"><img src="/img/{{ languageShort }}/fb-register-btn.png" /></a>
+		</div>
+		<div class="group right">
+			<hr/>
+			
+			<a id='twitter-register' class="social-btn"><img src="/img/{{ languageShort }}/tw-register-btn.png" /></a>
+        </div>
+        <div class="absolute">{{ or }}</div>
+        <hr/>
+        <a id="register-back" class="button-transparent back">
+			{{ back }}
+		</a>
+		
+		<a id="register-submit" class="button-generic submit">
+			<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ enter }}</div></div>
+		</a>
+        
+		<!--
+		<a id="playForFun" class="button-generic">
+			<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ playForFun }}</div></div>
+		</a>
+		
+		<div id="register-submit" class="button-generic submit">
+			<a><span>{{ submit }}</span> <i>►</i></a>
+		</div>
+		-->
+    </section>
+</script>
+
+<script type="text/_template" id="login-popup-tmpl">
+    <section id="userInfo-login" class="popup hidden">
+        <div class="group">
+        	<h1>{{ loginFormTitle }}</h1>
+			<!--<p>{{ loginInstructions }}</p>-->
+        </div>
+       <!-- <div class="group">
+        	<p>{{ socialLoginText }}</p>
+			<p><a id='facebook-login'><img src="/img/fb-login-btn.png" /></a>&nbsp;&nbsp;<a id='twitter-login'><img src="/img/sign-in-with-twitter-gray.png" /></a></p>
+       </div>-->
+        <div class="group hidden" id="error-messages">
+            <em for="emailAddress" class="error">{{ errors.validation.emailMsg }}</em>
+            <em for="password" class="error">{{ errors.validation.password }}</em>
+            <em for="passwordIncorrect" class="error">{{ errors.validation.passwordIncorrect }}</em>
+            <em for="emailAddressIncorrect" class="error">{{ errors.validation.emailAddressIncorrect }}</em>
+        </div>
+        
+        <div class="group form">
+            <label class="required"><b>{{ emailAddressText }}</b>
+                <input type="text" name="emailAddress" value="{- emailAddress -}" maxlength="50">
+                <a class="info"><i></i></a>
+            </label>
+            <label class="required"><b>{{ passwordText }}</b>
+                <input type="password" name="password" value="{- password -}" maxlength="18">
+                <a class="info"><i></i></a>
+            </label>
+            <a id="forgotPassword" class="button-transparent">
+					{{ forgotPassword }}
+			</a>
+        </div>
+                <div class="group left">
+        	<!--<p>{{ socialLoginText }}</p>-->
+        	<hr/>
+			<a id='facebook-login' class="social-btn"><img src="/img/{{ languageShort }}/fb-login-btn.png" /></a>
+		</div>
+		<div class="group right">
+			<hr/>
+			
+			<a id='twitter-login' class="social-btn"><img src="/img/{{ languageShort }}/tw-login-btn.png" /></a>
+        </div>
+        <div class="absolute">{{ or }}</div>
+        <hr/>
+        <a id="login-back" class="button-transparent back">
+			{{ back }}
+		</a>
+		
+		<a id="submit" class="button-generic submit">
+			<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ enter }}</div></div>
+		</a>
+		
+    </section>
+</script>
+
+<script type="text/_template" id="practice-user-name-tmpl">
+    <section id="practice-user-name" class="popup hidden">
+       <!-- <h1>{{ registrationFormTitle }}</h1>-->
+
+        <div class='loader'></div>
+        
+        <div class="group">
+        	<h1>{{ practiceUsernameTitle }}</h1>
+			<!--<p>{{ practiceUsernameInstructions }}</p>-->
+        </div>
+        
+        
+        <div class="group" id="error-messages">
+        	<em for="userName" class="error">{{ userNameText }}&nbsp;{{ errors.validation.requiredMsg }}</em>
+            <em for="userNameUnique" class="error">{{ errors.validation.userNameUniqueMsg }}</em>
+        </div>
+
+        <div class="group form">
+
+            <label class="required"><b>{{ userNameText }}</b>
+                <input type="text" name="userName" maxlength="30" value="{- userName -}">
+                <a class="info"><i></i></a>
+            </label>
+        </div>
+        <a id="practice-username-back" class="button-transparent back">
+			{{ back }}
+		</a>
+		
+		<a id="submit" class="button-generic">
+			<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ enter }}</div></div>
+		</a>
+
+    </section>
+</script>
+
+
+<script type="text/_template" id="forgot-pswd-popup-tmpl">
+    <section id="forgot-pswd-login" class="popup hidden">
+       <!-- <h1>{{ registrationFormTitle }}</h1>-->
+
+        <div class='loader'></div>
+        
+        <div class="group">
+        	<h1>{{ forgotPassword }}</h1>
+			<p>{{ forgotPswdInstructions }}</p>
+        </div>
+        <div class="group" id="error-messages">
+            <em for="emailAddress" class="error">{{ errors.validation.emailMsg }}</em>
+            <em for="emailAddressIncorrect" class="error">{{ errors.validation.emailAddressIncorrect }}</em>
+        </div>
+        
+        <div class="group form">
+            <label class="required"><b>{{ emailAddressText }}</b>
+                <input type="text" name="emailAddress" value="{- emailAddress -}" maxlength="50">
+                <a class="info"><i></i></a>
+            </label>
+        </div>
+        <a id="submit" class="button-generic submit">
+			<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ enter }}</div></div>
+		</a>
+
+    </section>
+</script>
+
+
+<script type="text/_template" id="error-popup-tmpl">
+	<div id="error-popup" class="popup hidden">
+	<h1>{{ errorTitle }}</h1>
+	<p>
+	{{  errorDescription }}
+	</p>
+
+
+	<a id="close-btn" class="button-generic submit">
+		<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ btnTxt }}</div></div>
+	</a>
+	
+	</div>
+</script>
+
+
+<script type="text/_template" id="register-options-popup-tmpl">
+	<div id="register-options" class="popup hidden">
+				<h1>{{ registrationOptionsTitle }}</h1>
+				<!--<p>
+					{{ registrationOptionsDescription }}
+				</p>-->
+				<p>
+					<div class="instruction-step"><div class="instruction-step-title">{{ stepOneTitle }}</div><div class="instruction-step-description">{{ stepOneHowToPlay }}</div></div>
+					<div class="instruction-step"><div class="instruction-step-title">{{ stepTwoTitle }}</div><div class="instruction-step-description">{{ stepTwoHowToPlay }}</div></div>
+					<div class="instruction-step"><div class="instruction-step-title">{{ stepThreeTitle }}</div><div class="instruction-step-description">{{ stepThreeHowToPlay }}</div></div>
+				</p>
+				<hr>
+				<!--<p>
+					<a class="button-generic">
+						<div class="btn-right-wrapper"><div class="btn-mid-wrapper">asdfsdfasd</div></div>
+					</a>
+				</p>
+				<p>
+					&nbsp;|&nbsp;<a id="login">{{ loginTxt }}</a>&nbsp;|&nbsp;<a id="playForFun">{{ playForFun }}</a>
+				</p>-->
+				
+				<a id="register" class="button-generic">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ register }}</div></div>
+				</a>
+				
+				<a id="login" class="button-generic">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ loginTxt }}</div></div>
+				</a>
+				<a id="playForFun" class="button-generic">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ practice }}</div></div>
+				</a>
+				<br/>
+				<br/>
+				<br/>
+				<a id="register-options-back" class="button-transparent back">
+					{{ back }}
+				</a>
+				
+				<!--
+				<a id="register-options-back" class="button-generic back">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ back }}</div></div>
+				</a>
+				-->
+				<!--
+				<a id="register-options-back" class="button-generic next">
+					<div class="btn-right-wrapper"><div class="btn-mid-wrapper">{{ next }}</div></div>
+				</a>
+				-->
+				<!--<div id="close-btn" class="button-generic">
+				<a><span>{{ close }}</span> <i>►</i></a>
+				</div>-->
+
+			</div>
+</script>
+
+<script type="text/_template" id="loggedIn-popup-tmpl">
+	<div id="logged-in" class="popup hidden">
+	<h1>{{ registrationOptionsTitle }}</h1>
+	<p>
+		{{ welcome }} &nbsp; {{ userName }}
+	</p>
+	
+	<p>
+		{{ loggedInInstructions }}
+	</p>
+	<div id="play-btn" class="button-generic">
+	<a><span>{{ play }}</span> <i>►</i></a>
+	</div>
+	
+	</div>
+</script>
+			<script type="text/_template" id="loader-tmpl">
+				<div class="ajax-loader hidden"></div>
+			</script>
+			</article>
+		<!--<footer>&nbsp;</footer>-->
+	</body>
+</html>
